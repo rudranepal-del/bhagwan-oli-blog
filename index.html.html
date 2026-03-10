@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Bhagwan Oli — DCGF</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0d0d0d;--paper:#f5f0e8;--accent:#c8502a;--gold:#c9963a;
+  --muted:#8a7f72;--line:rgba(13,13,13,0.12);--panel:#faf7f2;
+  --serif:'Playfair Display',Georgia,serif;
+  --sans:'DM Sans',sans-serif;
+  --mono:'DM Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-weight:300;line-height:1.7;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.35}
+#progress{position:fixed;top:0;left:0;height:3px;background:var(--accent);width:0%;z-index:1000;transition:width .1s linear}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:1.1rem 3.5rem;background:rgba(245,240,232,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.nav-logo{font-family:var(--serif);font-size:1.15rem;font-weight:700;color:var(--ink);text-decoration:none}
+.nav-logo span{color:var(--accent)}
+nav ul{list-style:none;display:flex;gap:2rem;align-items:center}
+nav ul a{font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s}
+nav ul a:hover{color:var(--ink)}
+.nav-admin-btn{background:var(--ink);color:var(--paper);padding:.45rem 1rem;font-family:var(--mono);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;border:none;cursor:pointer;transition:background .2s}
+.nav-admin-btn:hover{background:var(--accent)}
+
+/* HERO */
+.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:8rem 3.5rem 4rem;border-bottom:1px solid var(--line);gap:4rem}
+.hero-tag{font-family:var(--mono);font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem;display:flex;align-items:center;gap:.75rem}
+.hero-tag::before{content:'';display:block;width:28px;height:1px;background:var(--accent)}
+.hero h1{font-family:var(--serif);font-size:clamp(2.8rem,5.5vw,5rem);font-weight:900;line-height:1.05;letter-spacing:-.02em;margin-bottom:1rem}
+.hero h1 em{font-style:italic;color:var(--accent)}
+.hero-sub{font-size:1rem;color:var(--muted);max-width:420px;margin-bottom:2.5rem;line-height:1.9}
+.hero-cta{display:inline-flex;align-items:center;gap:.75rem;background:var(--ink);color:var(--paper);text-decoration:none;font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;padding:.9rem 2rem;transition:background .25s,transform .2s}
+.hero-cta:hover{background:var(--accent);transform:translateY(-2px)}
+
+/* PORTRAIT */
+.hero-right{display:flex;align-items:center;justify-content:center}
+.portrait-frame{position:relative;width:360px;height:460px}
+.portrait-bg{position:absolute;inset:0;background:linear-gradient(135deg,#e8ddd0,#d4c9b8);transform:rotate(3deg) translate(12px,12px);border:1px solid var(--line)}
+.portrait-main{position:absolute;inset:0;background:linear-gradient(160deg,#2c2c2c,#1a1a1a);display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+.portrait-photo-area{width:145px;height:145px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--gold));display:flex;align-items:center;justify-content:center;position:relative;z-index:1;box-shadow:0 0 0 6px rgba(200,80,42,.18);overflow:hidden}
+.portrait-photo-area img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.portrait-photo-area .initials{font-family:var(--serif);font-size:3rem;font-weight:700;color:white;user-select:none}
+.portrait-snippet{position:relative;z-index:1;padding:.8rem 1.4rem;text-align:center;color:rgba(245,240,232,.55);font-size:.78rem;line-height:1.6;max-width:280px;margin-top:.6rem;font-style:italic}
+.portrait-info{position:relative;z-index:1;text-align:center;margin-top:.5rem;color:var(--paper)}
+.portrait-info h3{font-family:var(--serif);font-size:1.25rem;font-weight:700;margin-bottom:.2rem}
+.portrait-info p{font-family:var(--mono);font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold)}
+.portrait-stat-bar{position:absolute;bottom:0;left:0;right:0;background:rgba(200,80,42,.9);padding:.65rem 1.25rem;display:flex;justify-content:space-between;align-items:center}
+.portrait-stat-bar span{font-family:var(--mono);font-size:.62rem;color:white;letter-spacing:.1em;text-transform:uppercase}
+.portrait-badge{background:white;color:var(--accent);font-family:var(--mono);font-size:.58rem;letter-spacing:.08em;padding:.18rem .5rem;font-weight:500}
+
+/* MARQUEE */
+.marquee-wrap{overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:.8rem 0;background:var(--ink)}
+.marquee-track{display:flex;gap:3rem;animation:marquee 28s linear infinite;white-space:nowrap}
+.marquee-track span{font-family:var(--mono);font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.4)}
+.marquee-track span.ac{color:var(--accent);opacity:1}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* SECTION LABEL */
+.sec-label{font-family:var(--mono);font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:.75rem;margin-bottom:2.5rem}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--line);max-width:80px}
+
+/* ABOUT */
+.about{display:grid;grid-template-columns:200px 1fr 1fr;gap:4rem;padding:6rem 3.5rem;border-bottom:1px solid var(--line);align-items:start}
+.stat-col{display:flex;flex-direction:column;gap:2rem}
+.stat-item{border-left:2px solid var(--accent);padding-left:1rem}
+.stat-num{font-family:var(--serif);font-size:2.2rem;font-weight:900;line-height:1}
+.stat-label{font-family:var(--mono);font-size:.63rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:.2rem}
+.about-text h2{font-family:var(--serif);font-size:clamp(1.8rem,3vw,2.5rem);font-weight:700;line-height:1.2;margin-bottom:1.25rem}
+.about-text h2 em{font-style:italic;color:var(--accent)}
+.about-text p{color:var(--muted);margin-bottom:.9rem;font-size:.93rem}
+.editable-intro{color:var(--ink)!important;font-size:.95rem!important;line-height:1.85!important}
+.skill-tag{display:inline-block;font-family:var(--mono);font-size:.63rem;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--line);padding:.32rem .72rem;margin:.22rem;color:var(--muted);transition:border-color .2s,color .2s}
+.skill-tag:hover{border-color:var(--accent);color:var(--accent)}
+
+/* BLOG */
+.blog-section{padding:6rem 3.5rem;border-bottom:1px solid var(--line)}
+.blog-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:3.5rem}
+.blog-header h2{font-family:var(--serif);font-size:clamp(2rem,4vw,3.2rem);font-weight:900;line-height:1.1}
+.blog-header h2 em{font-style:italic;color:var(--accent)}
+.view-all{font-family:var(--mono);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:2px;transition:color .2s,border-color .2s;white-space:nowrap}
+.view-all:hover{color:var(--accent);border-color:var(--accent)}
+.post-featured{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);margin-bottom:2rem;cursor:pointer;transition:box-shadow .3s;overflow:hidden}
+.post-featured:hover{box-shadow:8px 8px 0 var(--ink)}
+.post-feat-img{background:var(--ink);min-height:340px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.feat-art{width:100%;height:100%;position:absolute;inset:0}
+.feat-label{font-family:var(--mono);font-size:.63rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(245,240,232,.3);z-index:1;position:relative}
+.post-feat-body{padding:2.75rem;display:flex;flex-direction:column;justify-content:center}
+.post-cat{font-family:var(--mono);font-size:.63rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:.9rem}
+.post-title{font-family:var(--serif);font-size:1.6rem;font-weight:700;line-height:1.25;margin-bottom:.9rem;color:var(--ink)}
+.post-excerpt{color:var(--muted);font-size:.88rem;line-height:1.85;margin-bottom:1.4rem}
+.post-meta{display:flex;align-items:center;gap:1.2rem;font-family:var(--mono);font-size:.63rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.dot{color:var(--accent)}
+.post-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.post-card{border:1px solid var(--line);padding:2rem;cursor:pointer;transition:box-shadow .25s,transform .2s;position:relative;overflow:hidden}
+.post-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:0;background:var(--accent);transition:height .3s}
+.post-card:hover{transform:translateY(-4px);box-shadow:6px 6px 0 var(--line)}
+.post-card:hover::before{height:100%}
+.post-card .post-title{font-size:1.05rem;margin-bottom:.7rem}
+.post-card .post-excerpt{font-size:.83rem;margin-bottom:.9rem}
+.post-num{position:absolute;top:1.4rem;right:1.4rem;font-family:var(--serif);font-size:2.5rem;font-weight:900;color:var(--line);line-height:1}
+.post-card-img{width:100%;height:110px;object-fit:cover;margin-bottom:1rem;border:1px solid var(--line)}
+.empty-blog{text-align:center;padding:5rem 2rem;border:1px dashed var(--line)}
+.empty-blog em{font-family:var(--serif);font-size:1.4rem;color:var(--ink);display:block;margin-bottom:.5rem;font-style:italic}
+.empty-blog p{font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+
+/* NEWSLETTER */
+.newsletter{background:var(--ink);padding:5rem 3.5rem;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+.newsletter h2{font-family:var(--serif);font-size:clamp(2rem,3.5vw,3rem);font-weight:900;color:var(--paper);line-height:1.15}
+.newsletter h2 em{font-style:italic;color:var(--accent)}
+.newsletter p{color:rgba(245,240,232,.4);margin-top:1rem;font-size:.88rem}
+.nl-form{display:flex}
+.nl-form input{flex:1;padding:.9rem 1.2rem;background:rgba(245,240,232,.06);border:1px solid rgba(245,240,232,.15);border-right:none;color:var(--paper);font-family:var(--sans);font-size:.88rem;outline:none;transition:border-color .2s}
+.nl-form input::placeholder{color:rgba(245,240,232,.3)}
+.nl-form input:focus{border-color:var(--accent)}
+.nl-form button{background:var(--accent);color:white;border:none;padding:.9rem 1.6rem;font-family:var(--mono);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:background .2s}
+.nl-form button:hover{background:#b04424}
+footer{border-top:1px solid var(--line);padding:2.75rem 3.5rem;display:flex;align-items:center;justify-content:space-between}
+.footer-logo{font-family:var(--serif);font-size:1.1rem;font-weight:700}
+.footer-logo span{color:var(--accent)}
+.footer-links{list-style:none;display:flex;gap:2rem}
+.footer-links a{font-family:var(--mono);font-size:.63rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:var(--ink)}
+.footer-copy{font-family:var(--mono);font-size:.63rem;letter-spacing:.08em;color:var(--muted)}
+.fade-up{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+.fade-up.visible{opacity:1;transform:translateY(0)}
+
+/* OVERLAYS & MODALS */
+.overlay{position:fixed;inset:0;background:rgba(13,13,13,.72);z-index:500;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
+.overlay.open{display:flex}
+.modal{background:var(--paper);border:1px solid var(--line);max-width:520px;width:92%;padding:3rem;position:relative;max-height:90vh;overflow-y:auto}
+.modal-close{position:absolute;top:1.25rem;right:1.25rem;background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--muted);line-height:1;transition:color .2s}
+.modal-close:hover{color:var(--accent)}
+.modal h2{font-family:var(--serif);font-size:1.8rem;font-weight:700;margin-bottom:.4rem}
+.modal h2 em{color:var(--accent);font-style:italic}
+.modal .msub{font-family:var(--mono);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:2rem}
+.form-group{margin-bottom:1.2rem}
+.form-group label{display:block;font-family:var(--mono);font-size:.63rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:.78rem 1rem;background:white;border:1px solid var(--line);font-family:var(--sans);font-size:.9rem;color:var(--ink);outline:none;transition:border-color .2s;resize:vertical}
+.form-group input:focus,.form-group textarea:focus{border-color:var(--accent)}
+.form-group textarea{min-height:110px}
+.btn-primary{display:block;width:100%;background:var(--ink);color:var(--paper);border:none;padding:.9rem 2rem;font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:background .2s,transform .15s;text-align:center}
+.btn-primary:hover{background:var(--accent);transform:translateY(-1px)}
+.btn-secondary{background:transparent;color:var(--muted);border:1px solid var(--line);padding:.6rem 1.2rem;font-family:var(--mono);font-size:.63rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent)}
+.btn-danger{background:#8b1a1a;color:white;border:none;padding:.42rem .85rem;font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .2s}
+.btn-danger:hover{background:var(--accent)}
+.form-error{color:var(--accent);font-family:var(--mono);font-size:.65rem;margin-top:1.5rem;text-align:center;min-height:1.1em}
+
+/* DASHBOARD */
+.dashboard{position:fixed;inset:0;background:var(--paper);z-index:400;display:none;flex-direction:column;overflow:hidden}
+.dashboard.open{display:flex}
+.dash-header{background:var(--ink);padding:.9rem 2.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.07)}
+.dash-logo{font-family:var(--serif);font-size:1rem;font-weight:700;color:var(--paper)}
+.dash-logo span{color:var(--accent)}
+.dash-logo small{font-family:var(--mono);font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(245,240,232,.3);margin-left:.75rem}
+.dash-actions{display:flex;gap:.6rem;align-items:center}
+.dash-body{display:grid;grid-template-columns:220px 1fr;flex:1;overflow:hidden}
+.dash-sidebar{background:#0d0d0d;padding:1.5rem 0;border-right:1px solid rgba(255,255,255,.05);overflow-y:auto}
+.dash-nav-item{display:flex;align-items:center;gap:.75rem;padding:.72rem 1.5rem;font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(245,240,232,.38);cursor:pointer;transition:all .2s;border-left:2px solid transparent}
+.dash-nav-item:hover{color:rgba(245,240,232,.75);background:rgba(255,255,255,.03)}
+.dash-nav-item.active{color:var(--paper);border-left-color:var(--accent);background:rgba(200,80,42,.08)}
+.dash-nav-item svg{width:14px;height:14px;flex-shrink:0}
+.dash-content{overflow-y:auto;padding:2.5rem}
+.dash-panel{display:none}
+.dash-panel.active{display:block}
+.dash-title{font-family:var(--serif);font-size:1.75rem;font-weight:700;margin-bottom:.2rem}
+.dash-title em{color:var(--accent);font-style:italic}
+.dash-subtitle{font-family:var(--mono);font-size:.63rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:2.5rem}
+.type-toggle{display:flex;margin-bottom:1.5rem}
+.type-btn{flex:1;padding:.68rem;font-family:var(--mono);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--line);background:transparent;cursor:pointer;color:var(--muted);transition:all .2s}
+.type-btn.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.write-form{max-width:780px}
+.write-form textarea{min-height:260px;font-size:.92rem;line-height:1.75}
+
+/* posts table */
+.posts-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem}
+.posts-table{width:100%;border-collapse:collapse}
+.posts-table th{font-family:var(--mono);font-size:.61rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line);padding:.6rem 1rem;text-align:left;font-weight:400}
+.posts-table td{padding:.85rem 1rem;border-bottom:1px solid var(--line);font-size:.88rem;vertical-align:middle}
+.posts-table tr:hover td{background:rgba(200,80,42,.03)}
+.td-title{font-family:var(--serif);font-size:1rem;font-weight:600}
+.td-cat{font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.td-date{font-family:var(--mono);font-size:.6rem;color:var(--muted)}
+.td-actions{display:flex;gap:.45rem}
+.badge{display:inline-block;font-family:var(--mono);font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;padding:.18rem .5rem}
+.badge-pub{background:rgba(50,150,80,.12);color:#2a8a4a}
+.badge-note{background:rgba(200,80,42,.1);color:var(--accent)}
+
+/* profile panel */
+.profile-grid{display:grid;grid-template-columns:240px 1fr;gap:2.5rem;align-items:start}
+.photo-upload-zone{border:1.5px dashed var(--line);padding:1.75rem;text-align:center;cursor:pointer;transition:border-color .2s;position:relative;overflow:hidden;background:var(--panel)}
+.photo-upload-zone:hover{border-color:var(--accent)}
+.ph-placeholder{width:160px;height:160px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--gold));display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-family:var(--serif);font-size:3.5rem;font-weight:700;color:white}
+.ph-img{width:160px;height:160px;border-radius:50%;object-fit:cover;margin:0 auto 1rem;display:none}
+.photo-upload-zone p{font-family:var(--mono);font-size:.63rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.photo-upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer}
+
+/* read modal */
+.read-modal{max-width:720px}
+.read-cat{font-family:var(--mono);font-size:.63rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:.75rem}
+.read-title{font-family:var(--serif);font-size:2rem;font-weight:700;line-height:1.2;margin-bottom:1rem}
+.read-meta{font-family:var(--mono);font-size:.63rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--line)}
+.read-body{font-size:.95rem;line-height:1.9;color:#3a3530}
+.read-body p{margin-bottom:1.25rem}
+
+/* notification */
+.notif{position:fixed;bottom:2rem;right:2rem;background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;padding:.85rem 1.4rem;z-index:9000;transform:translateY(80px);opacity:0;transition:all .35s;border-left:3px solid var(--accent)}
+.notif.show{transform:translateY(0);opacity:1}
+.notif.success{border-left-color:#2a8a4a}
+.notif.err{border-left-color:var(--accent)}
+
+@media(max-width:900px){
+  nav{padding:1rem 1.5rem}
+  .hero{grid-template-columns:1fr;padding:7rem 1.5rem 3rem}
+  .about{grid-template-columns:1fr;padding:3rem 1.5rem}
+  .blog-section{padding:3rem 1.5rem}
+  .blog-header{flex-direction:column;align-items:flex-start;gap:1rem}
+  .post-featured{grid-template-columns:1fr}
+  .post-grid{grid-template-columns:1fr}
+  .newsletter{grid-template-columns:1fr;padding:3rem 1.5rem;gap:2rem}
+  footer{flex-direction:column;gap:1.5rem;text-align:center;padding:2rem 1.5rem}
+  .dash-body{grid-template-columns:1fr}
+  .dash-sidebar{display:none}
+  .profile-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div class="notif" id="notif"></div>
+
+<nav>
+  <a href="#" class="nav-logo">Bhagwan <span>Oli</span></a>
+  <ul>
+    <li><a href="#about">About</a></li>
+    <li><a href="#blog">Writing</a></li>
+    <li><a href="#newsletter">Connect</a></li>
+    <li><button class="nav-admin-btn" onclick="openLogin()">⚙ Admin</button></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left fade-up">
+    <div class="hero-tag">DCGF Professional · Writer · Thinker</div>
+    <h1>Ideas that<br/><em>move</em><br/>the needle.</h1>
+    <p class="hero-sub" id="heroSub">Bhagwan Oli writes about governance, financial strategy, and the human side of institutional work — drawing from years of hands-on experience at DCGF.</p>
+    <a href="#blog" class="hero-cta">Read the Blog <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+  <div class="hero-right fade-up" style="transition-delay:.2s">
+    <div class="portrait-frame">
+      <div class="portrait-bg"></div>
+      <div class="portrait-main">
+        <div class="portrait-photo-area" id="portraitPhoto"><span class="initials">BO</span></div>
+        <div class="portrait-snippet" id="portraitSnippet"><em style="font-family:var(--serif);font-size:.88rem;color:rgba(245,240,232,.7)">"Making institutions work — one clear idea at a time."</em></div>
+        <div class="portrait-info">
+          <h3 id="portraitName">Bhagwan Oli</h3>
+          <p id="portraitRole">DCGF · Specialist</p>
+        </div>
+        <div class="portrait-stat-bar">
+          <span>DCGF Professional</span>
+          <span class="portrait-badge">Active ✦</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="ac">✦ DCGF</span><span>Governance</span><span class="ac">✦ Finance</span><span>Policy</span><span class="ac">✦ Strategy</span><span>Leadership</span><span class="ac">✦ Innovation</span><span>Development</span><span class="ac">✦ DCGF</span><span>Governance</span><span class="ac">✦ Finance</span><span>Policy</span><span class="ac">✦ Strategy</span><span>Leadership</span><span class="ac">✦ Innovation</span><span>Development</span><span class="ac">✦ DCGF</span><span>Governance</span><span class="ac">✦ Finance</span><span>Policy</span><span class="ac">✦ Strategy</span><span>Leadership</span><span class="ac">✦ Innovation</span><span>Development</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="stat-col fade-up">
+    <div class="stat-item"><div class="stat-num">10+</div><div class="stat-label">Years at DCGF</div></div>
+    <div class="stat-item"><div class="stat-num" id="statCount">0</div><div class="stat-label">Articles & Notes</div></div>
+    <div class="stat-item"><div class="stat-num">∞</div><div class="stat-label">Curiosity</div></div>
+  </div>
+  <div class="about-text fade-up" style="transition-delay:.15s">
+    <div class="sec-label">Introduction</div>
+    <h2>Practitioner,<br/><em>not just a pundit.</em></h2>
+    <p class="editable-intro" id="introP1">Bhagwan Oli has spent years inside the machinery of DCGF — understanding not just the theory of governance and finance, but the daily friction of making institutions work. His writing comes from that place: honest, clear, and grounded.</p>
+    <p class="editable-intro" id="introP2">Whether breaking down complex policy shifts or reflecting on organisational culture, Bhagwan's voice is measured yet direct — always in service of a reader who wants more than surface-level takes.</p>
+  </div>
+  <div class="fade-up" style="transition-delay:.3s">
+    <div class="sec-label">Topics & Expertise</div>
+    <div>
+      <span class="skill-tag">Corporate Governance</span><span class="skill-tag">Financial Policy</span><span class="skill-tag">Development Finance</span><span class="skill-tag">Institutional Reform</span><span class="skill-tag">Risk Management</span><span class="skill-tag">Leadership</span><span class="skill-tag">Public Finance</span><span class="skill-tag">Strategy</span><span class="skill-tag">Compliance</span><span class="skill-tag">Capacity Building</span>
+    </div>
+  </div>
+</section>
+
+<!-- BLOG -->
+<section class="blog-section" id="blog">
+  <div class="blog-header fade-up">
+    <h2>Latest<br/><em>Writing</em></h2>
+    <a href="#" class="view-all">All Posts ↓</a>
+  </div>
+  <div id="blogContainer">
+    <div class="empty-blog">
+      <em>No posts yet.</em>
+      <p>Login as admin to publish your first blog post or note.</p>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter" id="newsletter">
+  <div class="fade-up">
+    <h2>Stay in the<br/><em>conversation.</em></h2>
+    <p>New essays on governance, finance, and institutional life — delivered directly. No noise, no spam.</p>
+  </div>
+  <div class="fade-up" style="transition-delay:.2s">
+    <div class="sec-label" style="color:rgba(245,240,232,.25)">Subscribe</div>
+    <div class="nl-form">
+      <input type="email" placeholder="your@email.com" id="nlEmail"/>
+      <button onclick="nlSub()">Subscribe</button>
+    </div>
+    <p style="margin-top:.7rem;font-size:.7rem;color:rgba(245,240,232,.22);font-family:var(--mono);letter-spacing:.06em">No spam. Unsubscribe anytime.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">Bhagwan <span>Oli</span></div>
+  <ul class="footer-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#blog">Writing</a></li>
+    <li><a href="#newsletter">Subscribe</a></li>
+  </ul>
+  <div class="footer-copy">© 2025 Bhagwan Oli · DCGF</div>
+</footer>
+
+<!-- LOGIN MODAL -->
+<div class="overlay" id="loginOverlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('loginOverlay')">✕</button>
+    <h2>Admin <em>Login</em></h2>
+    <div class="msub">Bhagwan Oli · DCGF Dashboard</div>
+    <div class="form-group"><label>Username</label><input type="text" id="loginU" placeholder="bhagwan" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+    <div class="form-group"><label>Password</label><input type="password" id="loginP" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+    <div class="form-error" id="loginErr"></div>
+    <button class="btn-primary" onclick="doLogin()">Enter Dashboard</button>
+    <p style="text-align:center;margin-top:1.25rem;font-family:var(--mono);font-size:.6rem;color:var(--muted)">Default: <strong>bhagwan</strong> / <strong>dcgf2025</strong></p>
+  </div>
+</div>
+
+<!-- READ POST MODAL -->
+<div class="overlay" id="readOverlay">
+  <div class="modal read-modal" style="max-width:720px">
+    <button class="modal-close" onclick="closeModal('readOverlay')">✕</button>
+    <div class="read-cat" id="rCat"></div>
+    <div class="read-title" id="rTitle"></div>
+    <div class="read-meta" id="rMeta"></div>
+    <div class="read-body" id="rBody"></div>
+  </div>
+</div>
+
+<!-- ADMIN DASHBOARD -->
+<div class="dashboard" id="dashboard">
+  <div class="dash-header">
+    <div class="dash-logo">Bhagwan <span>Oli</span><small>Admin Dashboard</small></div>
+    <div class="dash-actions">
+      <button class="btn-secondary" style="font-size:.6rem" onclick="closeDash()">← View Site</button>
+      <button class="btn-danger" onclick="logout()">Logout</button>
+    </div>
+  </div>
+  <div class="dash-body">
+    <div class="dash-sidebar">
+      <div class="dash-nav-item active" onclick="showPanel('write')" data-p="write">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>Write New
+      </div>
+      <div class="dash-nav-item" onclick="showPanel('posts')" data-p="posts">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 10h16M4 14h10"/></svg>All Posts
+      </div>
+      <div class="dash-nav-item" onclick="showPanel('profile')" data-p="profile">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>Profile &amp; Photo
+      </div>
+    </div>
+    <div class="dash-content">
+
+      <!-- WRITE -->
+      <div class="dash-panel active" id="panel-write">
+        <div class="dash-title">Write <em>New</em></div>
+        <div class="dash-subtitle">Publish a blog post or save a personal note</div>
+        <div class="type-toggle">
+          <button class="type-btn active" onclick="setType('blog',this)">📝 Blog Post</button>
+          <button class="type-btn" onclick="setType('note',this)">🗒 Personal Note</button>
+        </div>
+        <div class="write-form">
+          <input type="hidden" id="editId"/>
+          <div class="form-group"><label>Title</label><input type="text" id="wTitle" placeholder="Give your piece a strong title…"/></div>
+          <div class="form-group"><label>Category / Tag</label><input type="text" id="wCat" placeholder="e.g. Governance, Leadership, Finance…"/></div>
+          <div class="form-group" id="imgRow"><label>Cover Image URL (optional)</label><input type="text" id="wImg" placeholder="https://…"/></div>
+          <div class="form-group"><label>Content</label><textarea id="wBody" placeholder="Write your content here…&#10;&#10;Blank lines become new paragraphs."></textarea></div>
+          <div class="form-group" style="max-width:160px"><label>Reading Time (min)</label><input type="number" id="wMins" value="5" min="1" max="60"/></div>
+          <div style="display:flex;gap:1rem">
+            <button class="btn-primary" style="flex:1" onclick="savePost()">Publish</button>
+            <button class="btn-secondary" onclick="clearWrite()">Clear</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- POSTS -->
+      <div class="dash-panel" id="panel-posts">
+        <div class="dash-title">All <em>Posts</em></div>
+        <div class="dash-subtitle">Manage your published content</div>
+        <div class="posts-toolbar"><span id="pCountLbl" style="font-family:var(--mono);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">0 posts</span></div>
+        <table class="posts-table">
+          <thead><tr><th>Title</th><th>Category</th><th>Type</th><th>Date</th><th>Actions</th></tr></thead>
+          <tbody id="postsBody"></tbody>
+        </table>
+      </div>
+
+      <!-- PROFILE -->
+      <div class="dash-panel" id="panel-profile">
+        <div class="dash-title">Profile &amp; <em>Photo</em></div>
+        <div class="dash-subtitle">Your public introduction shown on the site</div>
+        <div class="profile-grid">
+          <div>
+            <div class="photo-upload-zone" id="photoZone">
+              <div class="ph-placeholder" id="phPlaceholder">BO</div>
+              <img id="phImg" class="ph-img" alt="Profile photo"/>
+              <p>Click to upload photo</p>
+              <p style="margin-top:.3rem;opacity:.5;font-size:.6rem">JPG, PNG · Max 4MB</p>
+              <input type="file" accept="image/*" onchange="uploadPhoto(event)"/>
+            </div>
+            <div style="margin-top:.75rem;text-align:center">
+              <button class="btn-secondary" style="font-size:.58rem" onclick="removePhoto()">Remove Photo</button>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:1.1rem">
+            <div class="form-group"><label>Full Name</label><input type="text" id="pName" value="Bhagwan Oli"/></div>
+            <div class="form-group"><label>Role / Title</label><input type="text" id="pRole" value="DCGF · Specialist"/></div>
+            <div class="form-group"><label>Portrait Tagline</label><input type="text" id="pTagline" value="Making institutions work — one clear idea at a time."/></div>
+            <div class="form-group"><label>Introduction — Paragraph 1</label><textarea id="pIntro1" style="min-height:85px">Bhagwan Oli has spent years inside the machinery of DCGF — understanding not just the theory of governance and finance, but the daily friction of making institutions work. His writing comes from that place: honest, clear, and grounded.</textarea></div>
+            <div class="form-group"><label>Introduction — Paragraph 2</label><textarea id="pIntro2" style="min-height:85px">Whether breaking down complex policy shifts or reflecting on organisational culture, Bhagwan's voice is measured yet direct — always in service of a reader who wants more than surface-level takes.</textarea></div>
+            <button class="btn-primary" onclick="saveProfile()">Save Profile</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ── STATE (in-memory, persists within tab session) ──
+const S = {
+  posts: [],
+  profile: { name:'Bhagwan Oli', role:'DCGF · Specialist', tagline:'Making institutions work — one clear idea at a time.', intro1:'', intro2:'', photo:null },
+  loggedIn: false,
+  writeType: 'blog'
+};
+const CREDS = { user:'bhagwan', pass:'dcgf2025' };
+
+// ── INIT ──
+window.onload = () => { renderProfile(); renderBlog(); scrollAnim(); updateStat(); };
+window.addEventListener('scroll', () => {
+  const h = document.body.scrollHeight - window.innerHeight;
+  document.getElementById('progress').style.width = (window.scrollY/h*100)+'%';
+});
+
+// ── SCROLL ANIMS ──
+function scrollAnim() {
+  const ob = new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');ob.unobserve(e.target);}}),{threshold:.1});
+  document.querySelectorAll('.fade-up').forEach(el=>ob.observe(el));
+}
+
+// ── NOTIFY ──
+function notify(msg, type='success') {
+  const n = document.getElementById('notif');
+  n.textContent = msg; n.className='notif show '+type;
+  setTimeout(()=>n.className='notif',3000);
+}
+
+// ── MODAL HELPERS ──
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.getElementById('loginOverlay').addEventListener('click',function(e){if(e.target===this)closeModal('loginOverlay');});
+document.getElementById('readOverlay').addEventListener('click',function(e){if(e.target===this)closeModal('readOverlay');});
+
+// ── LOGIN ──
+function openLogin() {
+  if (S.loggedIn) { openDash(); return; }
+  document.getElementById('loginOverlay').classList.add('open');
+  setTimeout(()=>document.getElementById('loginU').focus(),100);
+}
+function doLogin() {
+  const u = document.getElementById('loginU').value.trim();
+  const p = document.getElementById('loginP').value;
+  if (u===CREDS.user && p===CREDS.pass) {
+    S.loggedIn=true; closeModal('loginOverlay'); openDash();
+  } else {
+    document.getElementById('loginErr').textContent='✕ Incorrect credentials.';
+  }
+}
+function logout() { S.loggedIn=false; closeDash(); notify('Logged out.'); }
+
+// ── DASHBOARD ──
+function openDash() {
+  document.getElementById('dashboard').classList.add('open');
+  syncProfile(); renderPostsTable();
+}
+function closeDash() { document.getElementById('dashboard').classList.remove('open'); }
+
+function showPanel(name) {
+  document.querySelectorAll('.dash-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.dash-nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  document.querySelector('[data-p="'+name+'"]').classList.add('active');
+  if(name==='posts') renderPostsTable();
+}
+
+// ── WRITE ──
+function setType(t, btn) {
+  S.writeType=t;
+  document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('imgRow').style.display=(t==='note'?'none':'');
+}
+function clearWrite() {
+  ['wTitle','wCat','wImg','wBody'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('wMins').value='5';
+  document.getElementById('editId').value='';
+}
+function savePost() {
+  const title = document.getElementById('wTitle').value.trim();
+  const cat   = document.getElementById('wCat').value.trim()||'General';
+  const body  = document.getElementById('wBody').value.trim();
+  const img   = document.getElementById('wImg').value.trim();
+  const mins  = document.getElementById('wMins').value||'5';
+  const eid   = document.getElementById('editId').value;
+  if(!title){notify('Please add a title.','err');return;}
+  if(!body){notify('Content cannot be empty.','err');return;}
+  const ds = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+  if(eid) {
+    const i=S.posts.findIndex(p=>p.id===eid);
+    if(i>-1) S.posts[i]={...S.posts[i],title,cat,body,img,mins,ds};
+    notify('Post updated!'); document.getElementById('editId').value='';
+  } else {
+    S.posts.unshift({id:Date.now()+'',title,cat,body,img,mins,ds,type:S.writeType});
+    notify(S.writeType==='note'?'Note saved!':'Post published!');
+  }
+  clearWrite(); renderBlog(); updateStat(); renderPostsTable();
+}
+function deletePost(id) {
+  if(!confirm('Delete this post?')) return;
+  S.posts=S.posts.filter(p=>p.id!==id);
+  renderBlog(); renderPostsTable(); updateStat(); notify('Deleted.','err');
+}
+function editPost(id) {
+  const p=S.posts.find(x=>x.id===id); if(!p) return;
+  showPanel('write');
+  document.getElementById('wTitle').value=p.title;
+  document.getElementById('wCat').value=p.cat;
+  document.getElementById('wImg').value=p.img||'';
+  document.getElementById('wBody').value=p.body;
+  document.getElementById('wMins').value=p.mins;
+  document.getElementById('editId').value=p.id;
+  S.writeType=p.type||'blog';
+  document.querySelectorAll('.type-btn').forEach((b,i)=>b.classList.toggle('active',(i===0&&p.type!=='note')||(i===1&&p.type==='note')));
+}
+function readPost(id) {
+  const p=S.posts.find(x=>x.id===id); if(!p) return;
+  document.getElementById('rCat').textContent=p.cat;
+  document.getElementById('rTitle').textContent=p.title;
+  document.getElementById('rMeta').textContent=p.ds+' · '+p.mins+' min read';
+  document.getElementById('rBody').innerHTML=p.body.split('\n\n').map(para=>'<p>'+esc(para).replace(/\n/g,'<br/>')+'</p>').join('');
+  document.getElementById('readOverlay').classList.add('open');
+}
+
+// ── RENDER BLOG ──
+function renderBlog() {
+  const c=document.getElementById('blogContainer');
+  if(!S.posts.length){c.innerHTML='<div class="empty-blog"><em>No posts yet.</em><p>Login as admin to publish your first post or note.</p></div>';return;}
+  const blogs=S.posts.filter(p=>p.type!=='note');
+  const notes=S.posts.filter(p=>p.type==='note');
+  let h='';
+  if(blogs.length){
+    const f=blogs[0];
+    h+=`<article class="post-featured" onclick="readPost('${f.id}')">
+      <div class="post-feat-img">${f.img?`<img src="${f.img}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0"/>`:art()}<span class="feat-label">Featured Post</span></div>
+      <div class="post-feat-body"><div class="post-cat">${esc(f.cat)}</div><h2 class="post-title">${esc(f.title)}</h2><p class="post-excerpt">${esc(snip(f.body,200))}</p>
+      <div class="post-meta"><span>${f.ds}</span><span class="dot">✦</span><span>${f.mins} min read</span><span class="dot">✦</span><span>${esc(f.cat)}</span></div></div></article>`;
+    if(blogs.length>1){
+      h+='<div class="post-grid">';
+      blogs.slice(1).forEach((p,i)=>{
+        h+=`<article class="post-card" onclick="readPost('${p.id}')"><div class="post-num">${pad(i+2)}</div>${p.img?`<img class="post-card-img" src="${p.img}"/>`:''}
+        <div class="post-cat">${esc(p.cat)}</div><h3 class="post-title">${esc(p.title)}</h3><p class="post-excerpt">${esc(snip(p.body,130))}</p>
+        <div class="post-meta"><span>${p.ds}</span><span class="dot">✦</span><span>${p.mins} min read</span></div></article>`;
+      });
+      h+='</div>';
+    }
+  }
+  if(notes.length){
+    h+=`<div style="margin-top:3rem"><div class="sec-label" style="margin-bottom:1.5rem">Personal Notes</div><div class="post-grid">`;
+    notes.forEach((p,i)=>{
+      h+=`<article class="post-card" onclick="readPost('${p.id}')" style="background:var(--panel)"><div class="post-num" style="color:rgba(201,150,58,.18)">${pad(i+1)}</div>
+      <div class="post-cat" style="color:var(--gold)">🗒 ${esc(p.cat)}</div><h3 class="post-title">${esc(p.title)}</h3><p class="post-excerpt">${esc(snip(p.body,120))}</p>
+      <div class="post-meta"><span>${p.ds}</span></div></article>`;
+    });
+    h+='</div></div>';
+  }
+  c.innerHTML=h;
+}
+
+function art(){return`<svg style="width:100%;height:100%;position:absolute;inset:0" viewBox="0 0 600 360" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="rg" cx="30%" cy="40%" r="70%"><stop offset="0%" stop-color="#c8502a" stop-opacity="0.3"/><stop offset="100%" stop-color="#0d0d0d" stop-opacity="0"/></radialGradient></defs><rect width="600" height="360" fill="#1a1a1a"/><rect width="600" height="360" fill="url(#rg)"/><line x1="0" y1="90" x2="600" y2="90" stroke="rgba(255,255,255,.04)" stroke-width="1"/><line x1="0" y1="180" x2="600" y2="180" stroke="rgba(255,255,255,.04)" stroke-width="1"/><line x1="0" y1="270" x2="600" y2="270" stroke="rgba(255,255,255,.04)" stroke-width="1"/><line x1="150" y1="0" x2="150" y2="360" stroke="rgba(255,255,255,.04)" stroke-width="1"/><line x1="300" y1="0" x2="300" y2="360" stroke="rgba(255,255,255,.04)" stroke-width="1"/><line x1="450" y1="0" x2="450" y2="360" stroke="rgba(255,255,255,.04)" stroke-width="1"/><circle cx="480" cy="80" r="120" fill="none" stroke="#c8502a" stroke-width=".5" stroke-opacity=".3"/><rect x="60" y="220" width="30" height="80" fill="#c8502a" opacity=".7"/><rect x="110" y="190" width="30" height="110" fill="#c8502a" opacity=".5"/><rect x="160" y="240" width="30" height="60" fill="#c8502a" opacity=".4"/><rect x="210" y="200" width="30" height="100" fill="#c8502a" opacity=".6"/><rect x="260" y="170" width="30" height="130" fill="#c9963a" opacity=".5"/></svg>`;}
+
+// ── POSTS TABLE ──
+function renderPostsTable() {
+  const tb=document.getElementById('postsBody');
+  document.getElementById('pCountLbl').textContent=S.posts.length+' post'+(S.posts.length!==1?'s':'');
+  if(!S.posts.length){tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--muted);font-family:var(--mono);font-size:.7rem;padding:2.5rem">No posts yet.</td></tr>';return;}
+  tb.innerHTML=S.posts.map(p=>`<tr>
+    <td><div class="td-title">${esc(p.title)}</div></td>
+    <td><span class="td-cat">${esc(p.cat)}</span></td>
+    <td><span class="badge ${p.type==='note'?'badge-note':'badge-pub'}">${p.type==='note'?'Note':'Blog'}</span></td>
+    <td><span class="td-date">${p.ds}</span></td>
+    <td><div class="td-actions">
+      <button class="btn-secondary" style="font-size:.58rem;padding:.32rem .7rem" onclick="editPost('${p.id}')">Edit</button>
+      <button class="btn-danger" onclick="deletePost('${p.id}')">Del</button>
+    </div></td>
+  </tr>`).join('');
+}
+
+// ── PROFILE ──
+function syncProfile() {
+  const pr=S.profile;
+  document.getElementById('pName').value=pr.name;
+  document.getElementById('pRole').value=pr.role;
+  document.getElementById('pTagline').value=pr.tagline;
+  document.getElementById('pIntro1').value=pr.intro1||document.getElementById('introP1').textContent;
+  document.getElementById('pIntro2').value=pr.intro2||document.getElementById('introP2').textContent;
+  if(pr.photo){document.getElementById('phImg').src=pr.photo;document.getElementById('phImg').style.display='block';document.getElementById('phPlaceholder').style.display='none';}
+  else{document.getElementById('phImg').style.display='none';document.getElementById('phPlaceholder').style.display='flex';}
+}
+function saveProfile() {
+  S.profile.name=document.getElementById('pName').value.trim()||'Bhagwan Oli';
+  S.profile.role=document.getElementById('pRole').value.trim()||'DCGF · Specialist';
+  S.profile.tagline=document.getElementById('pTagline').value.trim();
+  S.profile.intro1=document.getElementById('pIntro1').value.trim();
+  S.profile.intro2=document.getElementById('pIntro2').value.trim();
+  renderProfile(); notify('Profile saved!');
+}
+function renderProfile() {
+  const pr=S.profile;
+  document.getElementById('portraitName').textContent=pr.name;
+  document.getElementById('portraitRole').textContent=pr.role;
+  document.getElementById('portraitSnippet').innerHTML=`<em style="font-family:var(--serif);font-size:.88rem;color:rgba(245,240,232,.7)">"${esc(pr.tagline)}"</em>`;
+  const initials=pr.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  const pa=document.getElementById('portraitPhoto');
+  if(pr.photo) pa.innerHTML=`<img src="${pr.photo}" alt="${esc(pr.name)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%"/>`;
+  else pa.innerHTML=`<span class="initials">${initials}</span>`;
+  if(pr.intro1) document.getElementById('introP1').textContent=pr.intro1;
+  if(pr.intro2) document.getElementById('introP2').textContent=pr.intro2;
+}
+function uploadPhoto(e) {
+  const f=e.target.files[0]; if(!f) return;
+  if(f.size>4*1024*1024){notify('Photo too large (max 4MB).','err');return;}
+  const r=new FileReader();
+  r.onload=ev=>{S.profile.photo=ev.target.result;renderProfile();syncProfile();notify('Photo uploaded!');};
+  r.readAsDataURL(f);
+}
+function removePhoto(){S.profile.photo=null;renderProfile();syncProfile();notify('Photo removed.');}
+function updateStat(){document.getElementById('statCount').textContent=S.posts.length;}
+
+// ── HELPERS ──
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function snip(s,n){const t=s.replace(/\n/g,' ');return t.length>n?t.slice(0,n).trim()+'…':t;}
+function pad(n){return String(n).padStart(2,'0');}
+function nlSub(){const v=document.getElementById('nlEmail').value;if(v&&v.includes('@')){document.getElementById('nlEmail').value='';notify('Subscribed! Thank you.');}else{notify('Please enter a valid email.','err');}}
+</script>
+</body>
+</html>
